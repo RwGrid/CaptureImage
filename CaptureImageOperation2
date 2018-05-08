@@ -1,0 +1,65 @@
+Final step 2
+@Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {// a method activated upon sending a request from the pick image button using intent
+        super.onActivityResult(requestCode, resultCode, data);
+
+        inputStreamImg = null;
+        if (resultCode ==Activity.RESULT_OK){//-----> this line of code can make this app avoid crash if u don't choose an image from gallery or camera
+            if (requestCode == PICK_IMAGE_CAMERA) {//if u pick camera
+            try {
+                  // please note that its important to keep it in this sequence (retreive image and convert it to bitmap, scaling it down then adjust rotation)
+               
+               Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);// change the saved image in the file to a bitmap by decoding the URI into a bit map
+                int nh =(int) (bitmap.getHeight() * (512.0)/ bitmap.getWidth());//those 2 lines decreases the image size in Bytes
+                scaled =Bitmap.createScaledBitmap(bitmap ,512 ,nh, true);//without actually making them smaller
+
+
+                ExifInterface ei = new ExifInterface(imageFilePath);
+                int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_UNDEFINED);//for the purpose of rotation:: https://stackoverflow.com/questions/14066038/why-does-an-image-captured-using-camera-intent-gets-rotated-on-some-devices-on-a?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+
+                Bitmap rotatedBitmap = null;
+                switch(orientation) {
+
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        rotatedBitmap = rotateImage(scaled, 90);
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        rotatedBitmap = rotateImage(scaled, 180);
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        rotatedBitmap = rotateImage(scaled, 270);
+                        break;
+
+                    case ExifInterface.ORIENTATION_NORMAL:
+                    default:
+                        rotatedBitmap = scaled;
+                }
+
+                btnvimage.setImageBitmap(rotatedBitmap);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == PICK_IMAGE_GALLERY) {
+
+            Uri selectedImage = data.getData();
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);//alows us acces to the gallery
+
+               int nh =(int) (bitmap.getHeight() * (512.0)/ bitmap.getWidth());
+                scaled =Bitmap.createScaledBitmap(bitmap ,512 ,nh, true);
+                
+                btnvimage.setImageBitmap(scaled);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                }
+            }
+
+        }
+
+    }
