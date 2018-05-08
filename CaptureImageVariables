@@ -1,0 +1,8 @@
+//variables to be written and initiated
+
+private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
+protected Bitmap bitmap;
+protected ImageView btnvimage;
+protected Bitmap scaled;
+protected String imageFilePath=null;// path of the file to save a picture
+
