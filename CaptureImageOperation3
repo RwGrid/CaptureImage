@@ -1,0 +1,33 @@
+// u need those to use Capture Image Operation 1 & 2
+
+
+
+ private File createImageFile() throws IOException{
+
+      String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+      String imageFileName = "IMG_" + timeStamp + "_";
+      File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+      File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+      imageFilePath= image.getAbsolutePath();
+
+      return image;
+  }
+  
+   public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    }
+    
+   // AND FINALLY (change bitmap to string to save it in the database)
+ 
+ private  String imageToString(){
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();// create an object that allows transfer of data using byte array
+        scaled.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);//Write a compressed version of the bitmap to the specified outputstream.
+        byte[] imgByte=byteArrayOutputStream.toByteArray();
+       return Base64.encodeToString(imgByte,Base64.DEFAULT);
+    }
+    
+__________________________________________________________________________________________________________________________________
+String image=imageToString();//get the image and turn it into string using a Base64 converterv and send it using rest api to the database 
