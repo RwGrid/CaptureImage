@@ -1,0 +1,8 @@
+//second step 
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="my_images"
+        path="Android/data/com.example.user.seniorproject/files/Pictures"/>
+</paths>
+// instead of ---com.example.user.seniorproject---->put ur package here
