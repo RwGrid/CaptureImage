@@ -1,0 +1,72 @@
+Final Step part 1
+
+
+btnAddImg.setOnClickListener(new View.OnClickListener() {// button to get the image 
+           @Override
+           public void onClick(View view) {
+               selectImage();
+           }
+       });
+ // Select image from camera and gallery
+    private void selectImage() {
+        try {
+            PackageManager pm = getActivity().getPackageManager();
+            int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, getActivity().getPackageName());
+            if (hasPerm == PackageManager.PERMISSION_GRANTED) {
+                final CharSequence[] options = {"Take Photo", "Choose From Gallery","Cancel"};
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                builder.setTitle("Select Option");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Take Photo")) {
+                            dialog.dismiss();
+                            //https://developer.android.com/training/camera/photobasics from here i got the answer
+                            // and here
+                            //https://github.com/prudhvirajkumar10/imagepickerdemo
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);//this code access camera
+                            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+
+                                File photoFile = null;
+                                try {
+                                    photoFile = createImageFile();
+                                }
+                                catch (IOException e) {
+                                    Toast.makeText(getActivity(), "error creating file", Toast.LENGTH_SHORT).show(); e.printStackTrace();
+                                    return;
+                                }
+                                // Continue only if the File was successfully created
+                                if (photoFile != null) {
+                                    Uri photoUri = FileProvider.getUriForFile(getActivity(), "com.example.android.fileprovider", photoFile);
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                                    if (photoUri==null){
+                                        Toast.makeText(getActivity(), "photo uri null", Toast.LENGTH_SHORT).show();
+                                    }
+                                    startActivityForResult(intent, PICK_IMAGE_CAMERA);
+
+
+                                }
+                            }
+
+
+                        } else if (options[item].equals("Choose From Gallery")) {
+                            dialog.dismiss();
+                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            if (pickPhoto.resolveActivity(getActivity().getPackageManager()) != null) {
+                                startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
+                            }
+
+                        } else if (options[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder.show();
+            } else
+
+                Toast.makeText(getActivity(), "Camera Permission error", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Camera Permission error", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }//end catch
+    }//end selectimage()      
