@@ -14,4 +14,4 @@
                 android:resource="@xml/file_paths"/>
         </provider>
     
-    
+    // android:authorities="com.example.android.fileprovider"------> this will be used later 
