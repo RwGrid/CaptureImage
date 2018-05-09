@@ -11,34 +11,34 @@ Final step 2
                
                Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);// change the saved image in the file to a bitmap by decoding the URI into a bit map
                 int nh =(int) (bitmap.getHeight() * (512.0)/ bitmap.getWidth());//those 2 lines decreases the image size in Bytes
-                scaled =Bitmap.createScaledBitmap(bitmap ,512 ,nh, true);//without actually making them smaller
+               Bitmap scaled1 =Bitmap.createScaledBitmap(bitmap ,512 ,nh, true);//without actually making them smaller
 
 
                 ExifInterface ei = new ExifInterface(imageFilePath);
                 int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                         ExifInterface.ORIENTATION_UNDEFINED);//for the purpose of rotation:: https://stackoverflow.com/questions/14066038/why-does-an-image-captured-using-camera-intent-gets-rotated-on-some-devices-on-a?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 
-                Bitmap rotatedBitmap = null;
+               
                 switch(orientation) {
 
                     case ExifInterface.ORIENTATION_ROTATE_90:
-                        rotatedBitmap = rotateImage(scaled, 90);
+                        scaled = rotateImage(scaled1, 90);
                         break;
 
                     case ExifInterface.ORIENTATION_ROTATE_180:
-                        rotatedBitmap = rotateImage(scaled, 180);
+                        scaled = rotateImage(scaled1, 180);
                         break;
 
                     case ExifInterface.ORIENTATION_ROTATE_270:
-                        rotatedBitmap = rotateImage(scaled, 270);
+                        scaled = rotateImage(scaled1, 270);
                         break;
 
                     case ExifInterface.ORIENTATION_NORMAL:
                     default:
-                        rotatedBitmap = scaled;
+                        scaled= scaled1;
                 }
 
-                btnvimage.setImageBitmap(rotatedBitmap);
+                btnvimage.setImageBitmap(scaled);
 
             } catch (Exception e) {
                 e.printStackTrace();
